@@ -27,7 +27,9 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
-    "**/*.mjs"
+    "**/*.mjs",
+    "src/pages/index.jsx",
+    "src/pages/_app.jsx"
   ],
   "exclude": ["node_modules"]
 }
