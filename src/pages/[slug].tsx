@@ -3,6 +3,27 @@ import type { GetStaticPaths, GetStaticProps, NextPage } from "next/types";
 import { api } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
 import Image from "next/image";
+import { PostView } from "~/components/postView";
+import { LoadingPage } from "~/components/loading";
+
+const ProfileFeed = (props: { userId: string }) => {
+  const { data: posts, isLoading } = api.posts.getPostsByUserId.useQuery({
+    userId: props.userId,
+  });
+
+  if (isLoading) return <LoadingPage />;
+
+  if (!posts || posts.length === 0)
+    return <div className="text-center text-xl font-bold">No posts yet!</div>;
+
+  return (
+    <div className="flex flex-col">
+      {posts.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost.post.id} />
+      ))}
+    </div>
+  );
+};
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: user } = api.profile.getUserByUsername.useQuery({
@@ -31,6 +52,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           user.username ?? ""
         }`}</div>
         <div className="w-full border-b border-slate-400" />
+        <ProfileFeed userId={user.id} />
       </PageLayout>
     </>
   );
